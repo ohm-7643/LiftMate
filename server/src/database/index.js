@@ -75,6 +75,18 @@ const migrations = [
       );
     `);
   },
+  (database) => {
+    database.exec(`
+      ALTER TABLE exercises
+        ADD COLUMN instructions TEXT NOT NULL DEFAULT '';
+
+      ALTER TABLE exercises
+        ADD COLUMN substitution_group TEXT NOT NULL DEFAULT '';
+
+      CREATE UNIQUE INDEX idx_exercises_name_unique
+        ON exercises(name COLLATE NOCASE);
+    `);
+  },
 ];
 
 export function initializeDatabase(database) {

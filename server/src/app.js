@@ -1,14 +1,20 @@
 import express from 'express';
 import databaseHealthRouter from './routes/database-health.js';
+import { createExerciseRouter } from './routes/exercises.js';
 
-const app = express();
+export function createApp({ database } = {}) {
+  const app = express();
 
-app.use(express.json());
+  app.use(express.json());
 
-app.get('/api/health', (_request, response) => {
-  response.json({ status: 'ok' });
-});
+  app.get('/api/health', (_request, response) => {
+    response.json({ status: 'ok' });
+  });
 
-app.use('/api', databaseHealthRouter);
+  app.use('/api', databaseHealthRouter);
+  app.use('/api', createExerciseRouter(database));
 
-export default app;
+  return app;
+}
+
+export default createApp();
