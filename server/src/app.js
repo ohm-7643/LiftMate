@@ -1,6 +1,7 @@
 import express from 'express';
 import databaseHealthRouter from './routes/database-health.js';
 import { createExerciseRouter } from './routes/exercises.js';
+import { createUsersRouter } from './routes/users.js';
 
 export function createApp({ database } = {}) {
   const app = express();
@@ -13,6 +14,19 @@ export function createApp({ database } = {}) {
 
   app.use('/api', databaseHealthRouter);
   app.use('/api', createExerciseRouter(database));
+  app.use('/api', createUsersRouter(database));
+
+  app.use((error, _request, response, _next) => {
+    if (error instanceof SyntaxError && 'body' in error) {
+      return response.status(400).json({
+        error: { code: 'INVALID_JSON', message: 'Request body must contain valid JSON.' },
+      });
+    }
+    console.error('Request failed:', error);
+    return response.status(500).json({
+      error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred.' },
+    });
+  });
 
   return app;
 }

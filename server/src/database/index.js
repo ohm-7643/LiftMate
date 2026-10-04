@@ -87,6 +87,17 @@ const migrations = [
         ON exercises(name COLLATE NOCASE);
     `);
   },
+  (database) => {
+    database.exec(`
+      ALTER TABLE user_preferences
+        ADD COLUMN equipment TEXT NOT NULL DEFAULT '[]'
+        CHECK (json_valid(equipment) AND json_type(equipment) = 'array');
+
+      ALTER TABLE user_preferences
+        ADD COLUMN muscle_priorities TEXT NOT NULL DEFAULT '[]'
+        CHECK (json_valid(muscle_priorities) AND json_type(muscle_priorities) = 'array');
+    `);
+  },
 ];
 
 export function initializeDatabase(database) {
