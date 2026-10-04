@@ -2,6 +2,7 @@ import express from 'express';
 import databaseHealthRouter from './routes/database-health.js';
 import { createExerciseRouter } from './routes/exercises.js';
 import { createUsersRouter } from './routes/users.js';
+import { createWorkoutsRouter } from './routes/workouts.js';
 
 export function createApp({ database } = {}) {
   const app = express();
@@ -15,6 +16,7 @@ export function createApp({ database } = {}) {
   app.use('/api', databaseHealthRouter);
   app.use('/api', createExerciseRouter(database));
   app.use('/api', createUsersRouter(database));
+  app.use('/api', createWorkoutsRouter(database));
 
   app.use((error, _request, response, _next) => {
     if (error instanceof SyntaxError && 'body' in error) {
