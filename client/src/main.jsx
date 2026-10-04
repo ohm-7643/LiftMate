@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import ChoiceGrid from './components/ChoiceGrid.jsx';
 import OnboardingProgress from './components/OnboardingProgress.jsx';
+import WorkoutExperience from './components/WorkoutExperience.jsx';
 import './style.css';
 
 const STEPS = [
@@ -220,23 +221,7 @@ function App() {
   }
 
   if (savedProfile) {
-    return (
-      <main className="success-page">
-        <section className="success-card" aria-live="polite">
-          <div className="success-check" aria-hidden="true">✓</div>
-          <p className="success-kicker">PROFILE CREATED</p>
-          <h1>You’re all set, {savedProfile.user.name}.</h1>
-          <p className="success-copy">
-            Your training preferences have been saved. LiftMate can use them when workout planning arrives.
-          </p>
-          <div className="saved-badge">
-            <span className="saved-badge__dot" />
-            Saved to your LiftMate profile
-          </div>
-          <p className="profile-reference">Profile #{savedProfile.user.id}</p>
-        </section>
-      </main>
-    );
+    return <WorkoutExperience savedProfile={savedProfile} />;
   }
 
   const goalLabel = GOALS.find((item) => item.value === profile.goal)?.label;
