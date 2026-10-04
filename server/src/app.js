@@ -18,7 +18,7 @@ export function createApp({ database, aiClient = createOllamaClient() } = {}) {
   app.use('/api', databaseHealthRouter);
   app.use('/api', createExerciseRouter(database));
   app.use('/api', createUsersRouter(database));
-  app.use('/api', createWorkoutsRouter(database));
+  app.use('/api', createWorkoutsRouter(database, aiClient));
   app.use('/api', createAiRouter(aiClient));
 
   app.use((error, _request, response, _next) => {

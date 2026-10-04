@@ -64,7 +64,7 @@ export function createOllamaClient({
       };
     },
 
-    async generate(messages) {
+    async generate(messages, { format, options, timeoutMs: requestTimeoutMs } = {}) {
       if (!Array.isArray(messages) || messages.length === 0) {
         throw new TypeError('At least one chat message is required.');
       }
@@ -74,9 +74,16 @@ export function createOllamaClient({
         {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ model, messages, stream: false, think: false }),
+          body: JSON.stringify({
+            model,
+            messages,
+            stream: false,
+            think: false,
+            ...(format ? { format } : {}),
+            ...(options ? { options } : {}),
+          }),
         },
-        timeoutMs,
+        requestTimeoutMs ?? timeoutMs,
       );
       const response = payload?.message?.content;
       if (typeof response !== 'string' || response.trim().length === 0) {
