@@ -3,8 +3,10 @@ import databaseHealthRouter from './routes/database-health.js';
 import { createExerciseRouter } from './routes/exercises.js';
 import { createUsersRouter } from './routes/users.js';
 import { createWorkoutsRouter } from './routes/workouts.js';
+import { createAiRouter } from './routes/ai.js';
+import { createOllamaClient } from './services/ai/ollama-client.js';
 
-export function createApp({ database } = {}) {
+export function createApp({ database, aiClient = createOllamaClient() } = {}) {
   const app = express();
 
   app.use(express.json());
@@ -17,6 +19,7 @@ export function createApp({ database } = {}) {
   app.use('/api', createExerciseRouter(database));
   app.use('/api', createUsersRouter(database));
   app.use('/api', createWorkoutsRouter(database));
+  app.use('/api', createAiRouter(aiClient));
 
   app.use((error, _request, response, _next) => {
     if (error instanceof SyntaxError && 'body' in error) {
