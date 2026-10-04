@@ -92,13 +92,21 @@ export default function WorkoutExperience({ savedProfile }) {
 
   const workout = plan.workout;
   const completed = session?.status === 'completed';
+  const loggedSetCount = completed
+    ? session.exercises.reduce((total, exercise) => total + exercise.logged_sets.length, 0)
+    : 0;
   return (
     <main className="workout-page">
       <header className="workout-topbar"><a className="brand" href="#top"><span className="brand__mark"><span /></span><span>liftmate</span></a><span>YOUR TRAINING SPACE</span></header>
       <section className="workout-card" id="top">
         <p className="success-kicker">{completed ? 'SESSION COMPLETE' : session ? 'WORKOUT IN PROGRESS' : 'TODAY’S WORKOUT'}</p>
         <h1>{session?.name ?? workout.name}</h1>
-        <p className="workout-subtitle">{session?.duration_minutes ?? workout.estimated_minutes} min <span>·</span> {plan.source === 'ollama_qwen' ? 'Personalized with Qwen' : 'Deterministic plan'}</p>
+        <p className="workout-subtitle">
+          {completed
+            ? <>Session logged <span>·</span> {plan.source === 'ollama_qwen' ? 'Personalized with Qwen' : 'Deterministic plan'}</>
+            : <>{session?.duration_minutes ?? workout.estimated_minutes} min <span>·</span> {plan.source === 'ollama_qwen' ? 'Personalized with Qwen' : 'Deterministic plan'}</>}
+        </p>
+        {completed && <p className="completed-sets">{session.exercises.length} exercises · {loggedSetCount} sets logged</p>}
         {!session && <p className="workout-copy">A focused session based on your goals, schedule, equipment, and muscle priorities.</p>}
         {error && <p className="workout-error" role="alert">{error}</p>}
 
